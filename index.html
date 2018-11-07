@@ -61,17 +61,17 @@
 				<a href="https://tonejs.github.io/" target="_blank">Tone.js</a>.</div>
 
 			<ol start="0">
-				<li class="ind" id="ind_0">(Single note)</li>
-				<li class="ind bold" id="ind_1">M (Major chord)</li>
-				<li class="ind" id="ind_2">m (Minor chord)</li>
-				<li class="ind" id="ind_3">M7 (Major chord with Major 7)</li>
-				<li class="ind" id="ind_4">mM7 (Minor chord with Major 7)</li>
-				<li class="ind" id="ind_5">7 (Major chord with Minor 7)</li>
-				<li class="ind" id="ind_6">m7 (Minor chord with Minor 7)</li>
+				<li onclick="selectChrd(0)" class="ind" id="ind_0">(Single note)</li>
+				<li onclick="selectChrd(1)" class="ind bold" id="ind_1">M (Major chord)</li>
+				<li onclick="selectChrd(2)" class="ind" id="ind_2">m (Minor chord)</li>
+				<li onclick="selectChrd(3)" class="ind" id="ind_3">M7 (Major chord with Major 7)</li>
+				<li onclick="selectChrd(4)" class="ind" id="ind_4">mM7 (Minor chord with Major 7)</li>
+				<li onclick="selectChrd(5)" class="ind" id="ind_5">7 (Major chord with Minor 7)</li>
+				<li onclick="selectChrd(6)" class="ind" id="ind_6">m7 (Minor chord with Minor 7)</li>
 			</ol>
 
-			<p class="recInd">Not Recording (press R to record)</p>
-			<p class="recInd hidden" style="color:red">Recording (press R to stop)</p>
+			<p onclick="record()" class="recInd">Not Recording (press R to record)</p>
+			<p onclick="record()" class="recInd hidden" style="color:red">Recording (press R to stop)</p>
 			<p id="chordProg"></p>
 		</div>
 		<div id="Keyboard"></div>
@@ -118,6 +118,8 @@
 		// GUI //
 
 		var keyboard = Interface.Keyboard();
+
+		Interface.Loader();
 
 		var notes = ["C", "C#", "D", "D#", "E", "F",
 			"F#", "G", "G#", "A", "A#", "B"
@@ -211,31 +213,40 @@
 		highlightEvents();
 
 
+		function selectChrd(i) {
+			$(".ind").removeClass("bold")
+			$("#ind_" + i).addClass("bold");
+			chordType = parseInt(i);
+
+			//if I really cared, I would triggerRelease on all the notes present in prev_chordType not present in chordType
+
+			highlightEvents();
+			var v = selected;
+			for (var oi in chords[chordType]) {
+				var o = chords[chordType][oi];
+				$("#keyboard #" + (v + o) + " #fill").css({
+					backgroundColor: "#ffcc00"
+				})
+			}
+		}
+
+		function record() {
+			recording = !recording;
+			$(".recInd").toggleClass("hidden");
+		}
+
+		selectChrd(0);
+
+
 		document.addEventListener("keydown", function (ev) {
 			if (["0", "1", "2", "3", "4", "5", "6"].indexOf(ev.key) != -1) {
-				$(".ind").removeClass("bold")
-				$("#ind_" + ev.key).addClass("bold");
-				chordType = parseInt(ev.key);
 
-				//if I really cared, I would triggerRelease on all the notes present in prev_chordType not present in chordType
-
-				highlightEvents();
-				var v = selected;
-				for (var oi in chords[chordType]) {
-					var o = chords[chordType][oi];
-					$("#keyboard #" + (v + o) + " #fill").css({
-						backgroundColor: "#ffcc00"
-					})
-				}
-
+				selectChrd(ev.key);
 
 			} else if (ev.key == "r") {
-				recording = !recording;
-				$(".recInd").toggleClass("hidden");
+				record();
 			}
 		})
-
-		Interface.Loader();
 	</script>
 
 </body>
