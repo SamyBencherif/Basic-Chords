@@ -188,12 +188,32 @@
 						})
 					}
 
+					$("#keyboard #" + v).on("touchstart", function () {
+						selected = v;
+						for (var oi in chords[chordType]) {
+							var o = chords[chordType][oi];
+							$("#keyboard #" + (v + o) + " #fill").css({
+								backgroundColor: "#ffcc00"
+							})
+						}
+					})
+
 					$("#keyboard #" + v).mouseenter(function () {
 						selected = v;
 						for (var oi in chords[chordType]) {
 							var o = chords[chordType][oi];
 							$("#keyboard #" + (v + o) + " #fill").css({
 								backgroundColor: "#ffcc00"
+							})
+						}
+					})
+
+					$("#keyboard #" + v).on("touchend", function () {
+						for (var oi in chords[chordType]) {
+							var o = chords[chordType][oi];
+							$("#keyboard #" + (v + o) + " #fill").css({
+								// wtf
+								backgroundColor: [1, 3, 6, 8, 10].indexOf((v + o) % 12) != -1 ? "#000" : "#FFF"
 							})
 						}
 					})
@@ -235,7 +255,7 @@
 			$(".recInd").toggleClass("hidden");
 		}
 
-		selectChrd(0);
+		selectChrd(1);
 
 
 		document.addEventListener("keydown", function (ev) {
